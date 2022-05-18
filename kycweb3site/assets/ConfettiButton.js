@@ -28,10 +28,13 @@ const ConfettiButton = () => {
           position: 'absolute',
           width: '100%',
           height: '100%',
+        //   justifyContent: 'center',
+        //   alignItems: 'center',
           background: '$white',
           opacity: 1,
           borderRadius: '$pill',
-          transition: 'all 0.4s ease'
+          transition: 'all 0.4s ease',
+          textAlign:'center'
         },
         '&:hover': {
           transform: 'translateY(-5px)',
@@ -45,7 +48,7 @@ const ConfettiButton = () => {
         }
       }}
     >
-      Click me
+      Sign up 
     </Button>
   );
 };
