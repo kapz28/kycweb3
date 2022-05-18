@@ -48,7 +48,7 @@ const ConfettiButton = () => {
         }
       }}
     >
-      Sign up 
+      Create Your Web3 Passport 
     </Button>
   );
 };
