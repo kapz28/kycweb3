@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 
 const ConfettiButton = () => {
   const handleConfetti = () => {
-    console.log("HEllo");
+    console.log("Hello");
     confetti({});
   };
 
