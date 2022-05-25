@@ -1,15 +1,17 @@
 // pages/index.js
 
-import Link from "next/link"
-import styles from '../styles/Home.module.css'
-import Head from 'next/head'
-import Image from 'next/image'
-import ConfettiButton from '../assets/ConfettiButton'
+import Link from "next/link";
+import styles from '../styles/Home.module.css';
+import Head from 'next/head';
+import Image from 'next/image';
+import ConfettiButton from '../assets/ConfettiButton';
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { Text } from "@nextui-org/react";
 import Autocomplete from "react-google-autocomplete";
 import writeUserData from "../assets/firebasedb";
 import React, { useState } from 'react';
+import { Magic } from "magic-sdk";
+import Login from "../services/magic";
 
 export default function Home() {
   const [FirstName, setFirstName] = useState('');
@@ -27,6 +29,7 @@ export default function Home() {
             </Head>
             <main className={styles.main}>
               <Text h1>Third Society</Text>
+              <Login></Login>
               <Spacer y={2.5} />
               <Input clearable bordered labelPlaceholder="First Name*" initialValue="" onChange={e => setFirstName(e.target.value)} onClearClick={() => setFirstName('a')}/>
               <Spacer y={2.5} />

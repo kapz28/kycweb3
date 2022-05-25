@@ -1,19 +1,58 @@
-import { Magic } from 'magic-sdk';
-const magic = new Magic(process.env.REACT_APP_PK_KEY);
+import { useRouter } from 'next/router'
+import { Magic } from 'magic-sdk'
 
-export const checkUser = async (cb) => {
-  const isLoggedIn = await magic.user.isLoggedIn();
-  if (isLoggedIn) {
-    const user = await magic.user.getMetadata();
-    return cb({ isLoggedIn: true, email: user.email });
+export default function Login() {
+  const router = useRouter()
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+  
+    const { elements } = event.target
+  
+    // the Magic code
+    const did = await new Magic('pk_live_67D8641A6E69A608')
+      .auth
+      .loginWithMagicLink({ email: elements.email.value })
+  
+    // Once we have the token from magic,
+    // update our own database
+    // const authRequest = await fetch()
+  
+    // if (authRequest.ok) {
+      // We successfully logged in, our API
+      // set authorization cookies and now we
+      // can redirect to the dashboard!
+      // router.push('/dashboard')
+    // } else { /* handle errors */ }
   }
-  return cb({ isLoggedIn: false });
-};
 
-export const loginUser = async (email) => {
-  await magic.auth.loginWithMagicLink({ email });
-};
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor='email'>Email</label>
+      <input name='email' type='email' />
+      <button>Log in</button>
+    </form>
+  )
+}
 
-export const logoutUser = async () => {
-  await magic.user.logout();
-};
+
+// import { Magic } from 'magic-sdk';
+// import React, { useState } from 'react';
+
+// export const checkUser = async (cb) => {
+//   const isLoggedIn = await magicobj.user.isLoggedIn();
+//   if (isLoggedIn) {
+//     const user = await magicobj.user.getMetadata();
+//     return cb({ isLoggedIn: true, email: user.email });
+//   }
+//   return cb({ isLoggedIn: false });
+// };
+
+// export const loginUser = async (email) => {
+//   const did = await new Magic('pk_live_67D8641A6E69A608');
+//   console.log(did);
+//   await magicobj.auth.loginWithMagicLink({ email });
+// };
+
+// export const logoutUser = async () => {
+//   await magicobj.user.logout();
+// };
