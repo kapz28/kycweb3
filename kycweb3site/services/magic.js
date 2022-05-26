@@ -1,17 +1,18 @@
 import { useRouter } from 'next/router'
 import { Magic } from 'magic-sdk'
+import React, { useState } from 'react';
 
 export default function Login() {
-  const router = useRouter()
+  const [MagicObject, setMagicObject] = useState('');
+  const router = useRouter();
   const handleSubmit = async (event) => {
-    event.preventDefault()
-  
+    event.preventDefault();
     const { elements } = event.target
   
     // the Magic code
-    const did = await new Magic('pk_live_67D8641A6E69A608')
-      .auth
-      .loginWithMagicLink({ email: elements.email.value })
+    var did = await new Magic('pk_live_67D8641A6E69A608');
+    setMagicObject(did);
+    did.auth.loginWithMagicLink({ email: elements.email.value });
   
     // Once we have the token from magic,
     // update our own database
@@ -50,7 +51,8 @@ export default function Login() {
 // export const loginUser = async (email) => {
 //   const did = await new Magic('pk_live_67D8641A6E69A608');
 //   console.log(did);
-//   await magicobj.auth.loginWithMagicLink({ email });
+//   await did.auth.loginWithMagicLink({ email });
+//   return did;
 // };
 
 // export const logoutUser = async () => {

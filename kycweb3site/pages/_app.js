@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return( <Component {...pageProps} />);
 }
 
 export default MyApp
