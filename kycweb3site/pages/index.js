@@ -15,13 +15,28 @@ export default function Home() {
     try {
       var did = await new Magic('pk_live_67D8641A6E69A608');
       setMagicLink(did);
+      console.log("Rapilan");
+      console.log(did);
+      console.log("Eapilan");
       await did.auth.loginWithMagicLink({ email: email });
       if(did.auth){
-        router.push('/about');
+        router.push(
+          {
+            pathname: '/about',
+            query: did
+          },
+          '/about',
+        );
       }else{
         const isLoggedIn = await magic.user.isLoggedIn();
         if (isLoggedIn) {
-            router.push('/about');
+          router.push(
+            {
+              pathname: '/about',
+              query: did
+            },
+            '/about',
+          );
         }else{
           console.log("not Loggged in");
         }

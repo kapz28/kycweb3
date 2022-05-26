@@ -5,9 +5,16 @@ import styles from '../styles/Home.module.css';
 import { Button, Input, Spacer, Text } from "@nextui-org/react";
 import Link from "next/link";
 import { writeUserData }from "../assets/firebasedb";
+import { useRouter } from 'next/router';
 
 
 export default function About(){
+    const router = useRouter();
+    console.log(router);
+    console.log("Wapilan");
+    const terminalPayload = router.query;
+    console.log(terminalPayload);
+    console.log("Japilan");
     const [FirstName, setFirstName] = useState('');
     const [LastName, setLastName] = useState('');
     const [EthAddress, setEthAddress] = useState('');
