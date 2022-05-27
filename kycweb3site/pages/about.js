@@ -43,6 +43,13 @@ export default function About(){
                         </Button>
                         </a>
                     </Link>
+                    <Link href="/contact" >
+                        <a>
+                        <Button auto color="gradient" rounded bordered centered>
+                            Go to Graph
+                        </Button>
+                        </a>
+                    </Link>
             </main>
         </div>
 
