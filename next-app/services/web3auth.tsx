@@ -117,6 +117,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
   }, [chain, web3AuthNetwork, setWalletProvider]);
 
   const login = async () => {
+    console.log("PAPILAN");
     if (!web3Auth) {
       console.log("web3auth not initialized yet");
       uiConsole("web3auth not initialized yet");

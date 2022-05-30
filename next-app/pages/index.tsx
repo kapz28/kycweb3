@@ -16,20 +16,11 @@ const Home: NextPage = () => {
     <div className={styles.container}>
       <Web3AuthProvider chain={chain} web3AuthNetwork={web3AuthNetwork}>
         <h1 className={styles.title}>
-          <a target="_blank" href="http://web3auth.io/" rel="noreferrer noopener">
-            Web3Auth
-          </a>{" "}
-          & NextJS Example
+          Welcome to Third Society
         </h1>
         <Setting setNetwork={setWeb3AuthNetwork} setChain={setChain} />
         <Main />
       </Web3AuthProvider>
-      <footer className={styles.footer}>
-        <a href="https://github.com/Web3Auth/Web3Auth/tree/master/examples/next-app" target="_blank" rel="noopener noreferrer">
-          Source code {"  "}
-          <Image className={styles.logo} src="/images/github-logo.png" alt="github logo" width={30} height={30} />
-        </a>
-      </footer>
     </div>
   );
 };
