@@ -40,9 +40,6 @@ const Main = () => {
 
   const unloggedInView = (
     <div className={styles.centerFlex}>
-       <div>
-          <img src="https://images.web3auth.io/web3auth.svg" />
-        </div>
       <h3>Login With</h3>
       <button onClick={()=>login(WALLET_ADAPTERS.OPENLOGIN,"discord")} className={styles.card}>
         Discord
@@ -53,11 +50,6 @@ const Main = () => {
       <button onClick={()=>loginWithWalletConnect()} className={styles.card}>
         Wallet Connect
       </button>
-      <form onSubmit={(e)=>handleLoginWithEmail(e)}  className={styles.centerFlex}>
-      <hr/>
-        <input type={'email'} placeholder={'Enter your email'} className={styles.input} />
-        <button type="submit" className={styles.card}>Login With Email</button>
-      </form>
     </div>
   
     

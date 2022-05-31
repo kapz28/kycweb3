@@ -20,12 +20,6 @@ function App() {
         <Setting setNetwork={setWeb3AuthNetwork} setChain={setChain} />
         <Main />
       </Web3AuthProvider>
-      <footer className={styles.footer}>
-        <a href="https://github.com/Web3Auth/Web3Auth/tree/master/examples/react-app" target="_blank" rel="noopener noreferrer">
-          Source code {"  "}
-          <img className={styles.logo} src="/images/github-logo.png" alt="github-logo" />
-        </a>
-      </footer>
     </div>
   );
 }
