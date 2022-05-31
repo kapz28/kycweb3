@@ -3,6 +3,7 @@ import { FormEvent } from "react";
 import { useWeb3Auth } from "../services/web3auth";
 import Loader from "./Loader";
 import styles from "../styles/Home.module.css";
+import { Button, Input, Spacer, Text } from "@nextui-org/react";
 
 const Main = () => {
   const { provider, login, loginWithWalletConnect, logout, getUserInfo, getAccounts, getBalance, signMessage, isLoading, signV4Message } = useWeb3Auth();
@@ -40,16 +41,20 @@ const Main = () => {
 
   const unloggedInView = (
     <div className={styles.centerFlex}>
-      <h3>Login With</h3>
-      <button onClick={()=>login(WALLET_ADAPTERS.OPENLOGIN,"discord")} className={styles.card}>
-        Discord
-      </button>
-      <button onClick={()=>login(WALLET_ADAPTERS.OPENLOGIN,"twitter")} className={styles.card}>
-        Twitter
-      </button>
-      <button onClick={()=>loginWithWalletConnect()} className={styles.card}>
-        Wallet Connect
-      </button>
+      <Text h1>Welcome to Third Society</Text>
+      <Text h2>Unlock a new dimension to your Communities</Text>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={()=>login(WALLET_ADAPTERS.OPENLOGIN,"discord")}>
+          Discord
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={()=>login(WALLET_ADAPTERS.OPENLOGIN,"twitter")}>
+          Twitter
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={()=>loginWithWalletConnect()}>
+          Wallet Connect
+      </Button>
     </div>
   
     

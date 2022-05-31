@@ -6,6 +6,7 @@ import styles from "./styles/Home.module.css";
 import { Web3AuthProvider } from "./services/web3auth";
 import Setting from "./components/Setting";
 import Main from "./components/Main";
+import { Button, Input, Spacer, Text } from "@nextui-org/react";
 
 function App() {
   const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>("mainnet");
@@ -14,11 +15,8 @@ function App() {
   return (
     <div className={styles.container}>
       <Web3AuthProvider chain={chain} web3AuthNetwork={web3AuthNetwork}>
-        <h1 className={styles.title}>
-          Welcome to Third Society
-        </h1>
-        <Setting setNetwork={setWeb3AuthNetwork} setChain={setChain} />
         <Main />
+        <Setting setNetwork={setWeb3AuthNetwork} setChain={setChain} />
       </Web3AuthProvider>
     </div>
   );
