@@ -14,24 +14,33 @@ const Main = () => {
   }
   const loggedInView = (
     <>
-      <button onClick={getUserInfo} className={styles.card}>
-        Get User Info
-      </button>
-      <button onClick={getAccounts} className={styles.card}>
-        Get Accounts
-      </button>
-      <button onClick={getBalance} className={styles.card}>
-        Get Balance
-      </button>
-      <button onClick={signMessage} className={styles.card}>
-        Sign Message
-      </button>
-      <button onClick={signV4Message} className={styles.card}>
-        Sign v4 Message
-      </button>
-      <button onClick={logout} className={styles.card}>
-        Log Out
-      </button>
+      <Text h1>Welcome to Third Society</Text>
+      <Text h2>Unlock a new dimension to your Communities</Text>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={getUserInfo}>
+          Get User Info
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={getAccounts}>
+          Get Accounts
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={getBalance}>
+          Get Accounts
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={signMessage}>
+          Get Accounts
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={signV4Message}>
+          Get Accounts
+      </Button>
+      <Spacer y={1} />
+      <Button auto color="gradient" rounded bordered onPress={logout}>
+          Get Accounts
+      </Button>
+      <Spacer y={1} />
 
       <div className={styles.console} id="console">
         <p className={styles.code}></p>
