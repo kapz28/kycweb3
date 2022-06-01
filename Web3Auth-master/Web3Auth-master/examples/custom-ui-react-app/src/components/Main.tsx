@@ -26,19 +26,19 @@ const Main = () => {
       </Button>
       <Spacer y={1} />
       <Button auto color="gradient" rounded bordered onPress={getBalance}>
-          Get Accounts
+          Get Balance
       </Button>
       <Spacer y={1} />
       <Button auto color="gradient" rounded bordered onPress={signMessage}>
-          Get Accounts
+          Sign Message
       </Button>
       <Spacer y={1} />
       <Button auto color="gradient" rounded bordered onPress={signV4Message}>
-          Get Accounts
+          Sign V4 Message
       </Button>
       <Spacer y={1} />
       <Button auto color="gradient" rounded bordered onPress={logout}>
-          Get Accounts
+          Logout
       </Button>
       <Spacer y={1} />
 
