@@ -14,8 +14,15 @@ const Main = () => {
     login(WALLET_ADAPTERS.OPENLOGIN, "email_passwordless", email);
   }
   const [VerifiedDiscord, setVerifiedDiscord] = useState(false);
-  const [VerifiedTwitter, setVerifiedTwitter] = useState(true);
-  const [VerifiedWallet, setVerifiedWallet] = useState(true);
+  const [VerifiedTwitter, setVerifiedTwitter] = useState(false);
+  const [VerifiedWallet, setVerifiedWallet] = useState(false);
+  const [ProgressPercentage, setProgressPercentage] = useState(0);
+
+  const progressUpdate = async () => {
+    var count = Number(VerifiedDiscord) + Number(VerifiedTwitter) + Number(VerifiedWallet);
+    setProgressPercentage(count*0.33);
+  };
+
   const loggedInView = (
     <>
       <Text h1>Welcome to Third Society</Text>
@@ -71,7 +78,7 @@ const Main = () => {
             Twitter
         </Button>
         <Spacer x={1} />
-        <Checkbox isSelected={VerifiedDiscord} color="gradient">
+        <Checkbox isSelected={VerifiedTwitter} color="gradient">
         </Checkbox>
       </div>
       <Spacer y={1} />
@@ -80,12 +87,11 @@ const Main = () => {
             Wallet Connect
         </Button>
         <Spacer x={1} />
-        <Checkbox isSelected={VerifiedDiscord} color="gradient">
+        <Checkbox isSelected={VerifiedWallet} color="gradient">
         </Checkbox>
-        
       </div>
       <Spacer y={1} />
-      <Progress value={30} color="gradient" />
+      <Progress value={ProgressPercentage} color="gradient" />
     </div> 
   );
 

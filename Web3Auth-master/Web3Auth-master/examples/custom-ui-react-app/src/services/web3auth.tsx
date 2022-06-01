@@ -127,22 +127,25 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
   const login = async (adapter: WALLET_ADAPTER_TYPE, loginProvider: LOGIN_PROVIDER_TYPE, login_hint?: string) => {
     try {
       setIsLoading(true);
-      console.log("UAPILAN");
       if (!web3Auth) {
         console.log("web3auth not initialized yet");
         uiConsole("web3auth not initialized yet");
         return;
       }
-
       const localProvider = await web3Auth.connectTo(adapter, { loginProvider, login_hint });
       setWalletProvider(localProvider!);
-      console.log("EAPILAN");
       const peace  = await web3Auth.getUserInfo();
-      console.log(peace);
-      console.log("QAPILAN");
+      console.log("PAPILAN");
+      console.log(loginProvider);
+      console.log("PAPILAN");
+      if (loginProvider == "discord"){
+        console.log("discord login detected and verified");
+      }
+      if (loginProvider == "twitter"){
+        console.log("twitter login detected and verified");
+      }
     } catch (error) {
       console.log("error", error);
-      console.log("YAPILAN");
     } finally {
       setIsLoading(false)
     }
