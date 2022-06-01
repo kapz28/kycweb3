@@ -6,7 +6,7 @@ import styles from "./styles/Home.module.css";
 import { Web3AuthProvider } from "./services/web3auth";
 import Setting from "./components/Setting";
 import Main from "./components/Main";
-import { Button, Input, Spacer, Text } from "@nextui-org/react";
+import { Button, Input, Spacer, Text, Progress } from "@nextui-org/react";
 
 function App() {
   const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>("mainnet");

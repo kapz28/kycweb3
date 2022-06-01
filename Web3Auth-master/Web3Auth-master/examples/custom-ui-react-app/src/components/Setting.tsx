@@ -25,7 +25,7 @@ const Setting = ({ setNetwork, setChain }: IProps) => {
 
   return (
     <div className={styles.setting}>
-      <div className={styles.row}>
+      <div className={styles.rowset}>
         <label htmlFor="network" className={styles.label}>
           Web3Auth Network
         </label>
@@ -39,7 +39,7 @@ const Setting = ({ setNetwork, setChain }: IProps) => {
           })}
         </select>
       </div>
-      <div className={styles.row}>
+      <div className={styles.rowset}>
         <label htmlFor="network" className={styles.label}>
           Blockchain
         </label>

@@ -1,9 +1,10 @@
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { FormEvent } from "react";
+import { useState } from "react";
 import { useWeb3Auth } from "../services/web3auth";
 import Loader from "./Loader";
 import styles from "../styles/Home.module.css";
-import { Button, Input, Spacer, Text } from "@nextui-org/react";
+import { Button, Checkbox, Input, Spacer, Text, Progress } from "@nextui-org/react";
 
 const Main = () => {
   const { provider, login, loginWithWalletConnect, logout, getUserInfo, getAccounts, getBalance, signMessage, isLoading, signV4Message } = useWeb3Auth();
@@ -12,6 +13,9 @@ const Main = () => {
     const email = (e.target as any)[0].value
     login(WALLET_ADAPTERS.OPENLOGIN, "email_passwordless", email);
   }
+  const [VerifiedDiscord, setVerifiedDiscord] = useState(false);
+  const [VerifiedTwitter, setVerifiedTwitter] = useState(true);
+  const [VerifiedWallet, setVerifiedWallet] = useState(true);
   const loggedInView = (
     <>
       <Text h1>Welcome to Third Society</Text>
@@ -53,20 +57,36 @@ const Main = () => {
       <Text h1>Welcome to Third Society</Text>
       <Text h2>Unlock a new dimension to your Communities</Text>
       <Spacer y={1} />
-      <Button auto color="gradient" rounded bordered onPress={()=>login(WALLET_ADAPTERS.OPENLOGIN,"discord")}>
-          Discord
-      </Button>
+      <div className={styles.row}>
+        <Button auto color="gradient" rounded bordered onPress={()=>login(WALLET_ADAPTERS.OPENLOGIN,"discord")}>
+            Discord
+        </Button>
+        <Spacer x={1} />
+        <Checkbox isSelected={VerifiedDiscord} color="gradient">
+        </Checkbox>
+      </div>
       <Spacer y={1} />
-      <Button auto color="gradient" rounded bordered onPress={()=>login(WALLET_ADAPTERS.OPENLOGIN,"twitter")}>
-          Twitter
-      </Button>
+      <div className={styles.row}>
+        <Button auto color="gradient" rounded bordered onPress={()=>login(WALLET_ADAPTERS.OPENLOGIN,"twitter")}>
+            Twitter
+        </Button>
+        <Spacer x={1} />
+        <Checkbox isSelected={VerifiedDiscord} color="gradient">
+        </Checkbox>
+      </div>
       <Spacer y={1} />
-      <Button auto color="gradient" rounded bordered onPress={()=>loginWithWalletConnect()}>
-          Wallet Connect
-      </Button>
-    </div>
-  
-    
+      <div className={styles.row}>
+        <Button auto color="gradient" rounded bordered onPress={()=>loginWithWalletConnect()}>
+            Wallet Connect
+        </Button>
+        <Spacer x={1} />
+        <Checkbox isSelected={VerifiedDiscord} color="gradient">
+        </Checkbox>
+        
+      </div>
+      <Spacer y={1} />
+      <Progress value={30} color="gradient" />
+    </div> 
   );
 
   return isLoading ?

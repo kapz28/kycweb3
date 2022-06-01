@@ -133,15 +133,13 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         uiConsole("web3auth not initialized yet");
         return;
       }
-      console.log("HAPILAN");
+
       const localProvider = await web3Auth.connectTo(adapter, { loginProvider, login_hint });
-      console.log("TTTTTT");
-      console.log(localProvider);
-      console.log("TTTTTT");
       setWalletProvider(localProvider!);
-      console.log("LAPILAN");
-      console.log(localProvider);
-      console.log("TAPILAN");
+      console.log("EAPILAN");
+      const peace  = await web3Auth.getUserInfo();
+      console.log(peace);
+      console.log("QAPILAN");
     } catch (error) {
       console.log("error", error);
       console.log("YAPILAN");
