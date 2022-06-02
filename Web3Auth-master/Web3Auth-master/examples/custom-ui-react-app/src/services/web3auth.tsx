@@ -10,6 +10,7 @@ import { CHAIN_CONFIG, CHAIN_CONFIG_TYPE } from "../config/chainConfig";
 import { WEB3AUTH_NETWORK_TYPE } from "../config/web3AuthNetwork";
 import { getWalletProvider, IWalletProvider } from "./walletProvider";
 import QRCodeModal from "@walletconnect/qrcode-modal";
+import { writeUserDiscord, writeUserTwitter, writeUserWallet } from "../services/firebasedb";
 
 export interface IWeb3AuthContext {
   web3Auth: Web3AuthCore | null;
@@ -24,6 +25,11 @@ export interface IWeb3AuthContext {
   signV4Message: () => Promise<any>;
   getAccounts: () => Promise<any>;
   getBalance: () => Promise<any>;
+  progressUpdate: () => Promise<any>,
+  getDiscordVerifiedStatus: () => Promise<any>,
+  getTwitterVerifiedStatus: () => Promise<any>,
+  getWalletVerifiedStatus: () => Promise<any>,
+
 }
 
 export const Web3AuthContext = createContext<IWeb3AuthContext>({
@@ -39,6 +45,11 @@ export const Web3AuthContext = createContext<IWeb3AuthContext>({
   signV4Message: async () => {},
   getAccounts: async () => {},
   getBalance: async () => {},
+  progressUpdate: async () => {},
+  getDiscordVerifiedStatus: async () => {},
+  getTwitterVerifiedStatus: async () => {},
+  getWalletVerifiedStatus: async () => {},
+
 });
 
 export function useWeb3Auth() {
@@ -60,6 +71,9 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
   const [provider, setProvider] = useState<IWalletProvider | null>(null);
   const [user, setUser] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [VerifiedDiscord, setVerifiedDiscord] = useState(false);
+  const [VerifiedTwitter, setVerifiedTwitter] = useState(false);
+  const [VerifiedWallet, setVerifiedWallet] = useState(false);
 
   const setWalletProvider = useCallback(
     (web3authProvider: SafeEventEmitterProvider) => {
@@ -68,6 +82,23 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     },
     [chain]
   );
+
+  const progressUpdate = async () => {
+    var count = Number(VerifiedDiscord) + Number(VerifiedTwitter) + Number(VerifiedWallet);
+    return count*33;
+  };
+
+  const getDiscordVerifiedStatus = async () => {
+    return VerifiedDiscord;
+  };
+
+  const getTwitterVerifiedStatus = async () => {
+    return VerifiedTwitter;
+  };
+
+  const getWalletVerifiedStatus = async () => {
+    return VerifiedWallet;
+  };
 
   useEffect(() => {
     const subscribeAuthEvents = (web3auth: Web3AuthCore) => {
@@ -135,14 +166,18 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       const localProvider = await web3Auth.connectTo(adapter, { loginProvider, login_hint });
       setWalletProvider(localProvider!);
       const peace  = await web3Auth.getUserInfo();
-      console.log("PAPILAN");
       console.log(loginProvider);
-      console.log("PAPILAN");
       if (loginProvider == "discord"){
         console.log("discord login detected and verified");
+        setVerifiedDiscord(true);
+        console.log(peace);
+        logout();
+        // writeUserDiscord(String(peace["email"]), String(peace["name"]));
       }
       if (loginProvider == "twitter"){
         console.log("twitter login detected and verified");
+        setVerifiedTwitter(true);
+        console.log(peace);
       }
     } catch (error) {
       console.log("error", error);
@@ -152,7 +187,6 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
 
   };
   const loginWithWalletConnect = async () => {
-    console.log("RAPILAN");
     try {
       setIsLoading(true);
       if (!web3Auth) {
@@ -246,6 +280,10 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     getBalance,
     signMessage,
     signV4Message,
+    progressUpdate,
+    getDiscordVerifiedStatus,
+    getTwitterVerifiedStatus,
+    getWalletVerifiedStatus
   };
   return <Web3AuthContext.Provider value={contextProvider}>{children}</Web3AuthContext.Provider>;
 };
