@@ -21,21 +21,16 @@ const Main = () => {
   const [VerifiedWallet, setVerifiedWallet] = useState(false);
 
   const loginAndUpdate = async (adapter: WALLET_ADAPTER_TYPE,provider: LOGIN_PROVIDER_TYPE, login_hint?: string) => {
-    const chumma = await login(adapter,provider,login_hint);
-    console.log("TERE");
-    var count = await progressUpdate();
-    console.log("WERE");
-    var discordStatus = await getDiscordVerifiedStatus();
-    var twitterStatus = await getTwitterVerifiedStatus();
-    var walletStatus = await getWalletVerifiedStatus();
-    console.log("HERE");
-    console.log(discordStatus);
-    console.log(twitterStatus);
-    console.log(walletStatus);
-    setProgressPercentage(count);
-    setVerifiedDiscord(discordStatus);
-    setVerifiedTwitter(twitterStatus);
-    setVerifiedWallet(walletStatus);
+    const chumma = await login(adapter,provider,login_hint).then(async() =>{
+      if(provider == "discord"){
+        setVerifiedDiscord(true);
+        setProgressPercentage(ProgressPercentage + 33);
+      }
+      else if(provider == "twitter"){
+        setVerifiedTwitter(true);
+        setProgressPercentage(ProgressPercentage + 33);
+      }
+    });
   };
 
   const loggedInView = (

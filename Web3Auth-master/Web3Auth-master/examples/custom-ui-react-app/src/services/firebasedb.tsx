@@ -2,13 +2,18 @@ import { getDatabase, ref, set } from "firebase/database";
 
 export const writeUserDiscord = async (email : string, handle : string) => {
     try{
+        console.log(email);
+        console.log(handle);
         const db = getDatabase();
         set(ref(db, 'users/' + email), {
             discord: handle,
             discordverified: true
         });
+        console.log("written to firebase");
         return true;
     } catch(e) {
+        console.log("firekapbase error");
+        console.log(e);
         return false;
     }
 
