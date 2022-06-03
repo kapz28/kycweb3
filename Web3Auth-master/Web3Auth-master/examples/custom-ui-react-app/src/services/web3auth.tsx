@@ -170,13 +170,15 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       if (loginProvider == "discord"){
         console.log("discord login detected and verified");
         setVerifiedDiscord(true);
+        console.log(String(peace["email"]));
+        console.log(String(peace["name"]));
+        const chumma = await writeUserDiscord(String(peace["email"]), String(peace["name"]));
         logout();
-        // const chumma = await writeUserDiscord(String(peace["email"]), String(peace["name"]));
       }
       if (loginProvider == "twitter"){
         console.log("twitter login detected and verified");
         setVerifiedTwitter(true);
-        console.log(peace);
+        logout();
       }
     } catch (error) {
       console.log("error", error);
