@@ -14,6 +14,9 @@ import QRCodeModal from "@walletconnect/qrcode-modal";
 import { writeUserDiscord, writeUserTwitter, writeUserWallet } from "../services/firebasedb";
 import { MetamaskAdapter } from '@web3auth/metamask-adapter';
 import { PhantomAdapter } from '@web3auth/phantom-adapter';
+import { SolanaWalletAdapter } from '@web3auth/torus-solana-adapter';
+import { TorusWalletAdapter } from '@web3auth/torus-evm-adapter';
+import solanaProvider from "./solanaProvider";
 
 export interface IWeb3AuthContext {
   web3Auth: Web3Auth | null;
@@ -148,64 +151,121 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       try {
         console.log("Kapilan");
         console.log(currentChainConfig);
+        const blockchaintype = currentChainConfig["ticker"];
         console.log("Kapilan");
         setIsLoading(true);
         const web3auth = new Web3Auth({ chainConfig: currentChainConfig, clientId: "BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U" });
         subscribeAuthEvents(web3auth);
-        const metaAdapter = new MetamaskAdapter({
-          chainConfig:{
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x3",
-          rpcTarget: "https://ropsten.infura.io/v3/776218ac4734478c90191dde8cae483c",
-          displayName: "ropsten",
-          blockExplorer: "https://ropsten.etherscan.io/",
-          ticker: "ETH",
-          tickerName: "Ethereum",
-          },
-        });
-        web3auth.configureAdapter(metaAdapter);
+        if (blockchaintype == "ETH"){
+          const metaAdapter = new MetamaskAdapter({
+            chainConfig:{
+            chainNamespace: CHAIN_NAMESPACES.EIP155,
+            chainId: "0x3",
+            rpcTarget: "https://ropsten.infura.io/v3/776218ac4734478c90191dde8cae483c",
+            displayName: "ropsten",
+            blockExplorer: "https://ropsten.etherscan.io/",
+            ticker: "ETH",
+            tickerName: "Ethereum",
+            },
+          });
+          const TorusAdapter = new TorusWalletAdapter({
+           loginSettings: {
+             verifier: "google"
+           },
+           initParams: {
+             buildEnv: "testing"
+           },
+           chainConfig:{
+             chainNamespace: CHAIN_NAMESPACES.EIP155,
+             chainId: "0x3",
+             rpcTarget: "https://ropsten.infura.io/v3/776218ac4734478c90191dde8cae483c",
+             displayName: "ropsten",
+             blockExplorer: "https://ropsten.etherscan.io/",
+             ticker: "ETH",
+             tickerName: "Ethereum",
+           }
+          });     
+          web3auth.configureAdapter(metaAdapter);
+          web3auth.configureAdapter(TorusAdapter);
+          await web3auth.initModal({
+            modalConfig: {
+              [WALLET_ADAPTERS.OPENLOGIN]: {
+                label: "OpenLogin",
+                showOnModal: false,
+                showOnDesktop: false,
+                showOnMobile: false
+              },
+              [WALLET_ADAPTERS.COINBASE]: {
+                label: "Coinbase",
+                showOnModal: true,
+                showOnDesktop: true,
+                showOnMobile: true
+              },
+              [WALLET_ADAPTERS.TORUS_EVM]: {
+                label: "Torus Ethereum",
+                showOnModal: true,
+                showOnDesktop: true,
+                showOnMobile: true
+              },
+              [WALLET_ADAPTERS.WALLET_CONNECT_V1]: {
+                label: "Wallet Connect",
+                showOnModal: true,
+                showOnDesktop: true,
+                showOnMobile: true
+              },
+            },
+          });
+        } else if (blockchaintype == "SOL") {
+          const solanaAdapter = new SolanaWalletAdapter({
+            adapterSettings: {
+             modalZIndex: 99999
+           },
+           loginSettings: {
+             loginProvider: "google"
+           },
+           initParams: {
+             buildEnv: "testing"
+           },
+           chainConfig:{
+             chainNamespace: CHAIN_NAMESPACES.SOLANA,
+             rpcTarget: "https://api.testnet.solana.com",
+             blockExplorer: "https://explorer.solana.com",
+             chainId: "0x2",
+             displayName: "testnet",
+             ticker: "sol",
+             tickerName: "solana",
+           }
+          });
+          const phantomAdapter = new PhantomAdapter()
+          web3auth.configureAdapter(phantomAdapter);
+          web3auth.configureAdapter(solanaAdapter);
+          await web3auth.initModal({
+            modalConfig: {
+              [WALLET_ADAPTERS.OPENLOGIN]: {
+                label: "OpenLogin",
+                showOnModal: false,
+                showOnDesktop: false,
+                showOnMobile: false
+              },
+              [WALLET_ADAPTERS.PHANTOM]: {
+                label: "Phantom",
+                showOnModal: true,
+                showOnDesktop: true,
+                showOnMobile: true
+              },
+              [WALLET_ADAPTERS.TORUS_SOLANA]: {
+                label: "Torus Solana",
+                showOnModal: true,
+                showOnDesktop: true,
+                showOnMobile: true
+              },
+            },
+          });
+        }
+
         // const phantomAdapter = await new PhantomAdapter();
         // web3auth.configureAdapter(phantomAdapter);
-        await web3auth.initModal({
-          modalConfig: {
-            [WALLET_ADAPTERS.OPENLOGIN]: {
-              label: "OpenLogin",
-              showOnModal: false,
-              showOnDesktop: false,
-              showOnMobile: false
-            },
-            [WALLET_ADAPTERS.PHANTOM]: {
-              label: "Phantom",
-              showOnModal: true,
-              showOnDesktop: true,
-              showOnMobile: true
-            },
-            [WALLET_ADAPTERS.COINBASE]: {
-              label: "coinbase",
-              showOnModal: true,
-              showOnDesktop: true,
-              showOnMobile: true
-            },
-            [WALLET_ADAPTERS.TORUS_EVM]: {
-              label: "Torus Ethereum",
-              showOnModal: true,
-              showOnDesktop: true,
-              showOnMobile: true
-            },
-            [WALLET_ADAPTERS.TORUS_SOLANA]: {
-              label: "Torus Solana",
-              showOnModal: true,
-              showOnDesktop: true,
-              showOnMobile: true
-            },
-            [WALLET_ADAPTERS.WALLET_CONNECT_V1]: {
-              label: "Wallet Connect",
-              showOnModal: true,
-              showOnDesktop: true,
-              showOnMobile: true
-            },
-          },
-        });
+
         setWeb3Auth(web3auth);
       } catch (error) {
         console.log("error", error);
@@ -278,6 +338,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     }
 
   };
+
   const loginWithWalletConnect = async () => {
     try {
       if (!web3Auth) {
@@ -287,6 +348,17 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       }
       const localProvider = await web3Auth.connect();
       setWalletProvider(localProvider!);
+      const peace = await web3Auth.getUserInfo();
+      // Object.keys(peace).map(function(keyName, keyIndex) {
+      //   // use keyName to get current key's name
+      //   // and a[keyName] to get its value
+        
+      //   if(keyName.includes("accounts") || keyName.includes("Accounts")){
+          
+      //     const chumma = await writeUserDiscord();
+      //   }
+      // })
+
     } catch (error) {
       console.error(error);
     }
