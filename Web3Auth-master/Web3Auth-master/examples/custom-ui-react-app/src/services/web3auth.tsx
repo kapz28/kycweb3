@@ -5,7 +5,7 @@ import { Web3Auth } from "@web3auth/web3auth";
 import { Web3AuthCore } from "@web3auth/core";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
-import { NetworkSwitch } from "@web3auth/ui"
+import { NetworkSwitch } from "@web3auth/ui";
 import { createContext, FunctionComponent, ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { CHAIN_CONFIG, CHAIN_CONFIG_TYPE } from "../config/chainConfig";
 import { WEB3AUTH_NETWORK_TYPE } from "../config/web3AuthNetwork";
@@ -23,8 +23,8 @@ export interface IWeb3AuthContext {
   provider: IWalletProvider | null;
   isLoading: boolean;
   user: unknown;
-  login: (adapter: WALLET_ADAPTER_TYPE,provider: LOGIN_PROVIDER_TYPE, login_hint?: string) => Promise<void>;
-  loginWithWalletConnect: ()=> Promise<void>;
+  login: (adapter: WALLET_ADAPTER_TYPE,provider: LOGIN_PROVIDER_TYPE, login_hint?: string) => Promise<any>;
+  loginWithWalletConnect: ()=> Promise<any>;
   logout: () => Promise<void>;
   getUserInfo: () => Promise<any>;
   signMessage: () => Promise<any>;
@@ -82,9 +82,14 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
   const [VerifiedWallet, setVerifiedWallet] = useState(false);
 
   const setWalletProvider = useCallback(
-    (web3authProvider: SafeEventEmitterProvider) => {
+    async (web3authProvider: SafeEventEmitterProvider) => {
       const walletProvider = getWalletProvider(chain, web3authProvider, uiConsole);
       setProvider(walletProvider);
+      const walletaddr = await walletProvider.getAccounts();
+      console.log("WALLET");
+      writeUserWallet(String(walletaddr[0]));
+      setVerifiedWallet(true);
+      console.log("WALLET");
     },
     [chain]
   );
@@ -323,7 +328,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         setVerifiedDiscord(true);
         console.log(String(peace["email"]));
         console.log(String(peace["name"]));
-        const chumma = await writeUserDiscord(String(peace["email"]), String(peace["name"]));
+        await writeUserDiscord(String(peace["email"]), String(peace["name"]));
         logout();
       }
       if (loginProvider == "twitter"){
@@ -331,8 +336,10 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         setVerifiedTwitter(true);
         logout();
       }
+      return true;
     } catch (error) {
       console.log("error", error);
+      return false;
     } finally {
       setIsLoading(false)
     }
@@ -344,23 +351,14 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       if (!web3Auth) {
         console.log("web3auth not initialized yet");
         uiConsole("web3auth not initialized yet");
-        return;
+        return false;
       }
       const localProvider = await web3Auth.connect();
       setWalletProvider(localProvider!);
-      const peace = await web3Auth.getUserInfo();
-      // Object.keys(peace).map(function(keyName, keyIndex) {
-      //   // use keyName to get current key's name
-      //   // and a[keyName] to get its value
-        
-      //   if(keyName.includes("accounts") || keyName.includes("Accounts")){
-          
-      //     const chumma = await writeUserDiscord();
-      //   }
-      // })
-
+      return true;
     } catch (error) {
       console.error(error);
+      return false;
     }
     // console.log("TAPILAN");
     // try {

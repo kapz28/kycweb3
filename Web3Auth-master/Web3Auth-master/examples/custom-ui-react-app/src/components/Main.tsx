@@ -21,7 +21,8 @@ const Main = () => {
   const [VerifiedWallet, setVerifiedWallet] = useState(false);
 
   const loginAndUpdate = async (adapter: WALLET_ADAPTER_TYPE,provider: LOGIN_PROVIDER_TYPE, login_hint?: string) => {
-    const chumma = await login(adapter,provider,login_hint).then(async() =>{
+    const chumma = await login(adapter,provider,login_hint);
+    if (chumma){
       if(provider == "discord"){
         setVerifiedDiscord(true);
         setProgressPercentage(ProgressPercentage + 33);
@@ -30,7 +31,15 @@ const Main = () => {
         setVerifiedTwitter(true);
         setProgressPercentage(ProgressPercentage + 33);
       }
-    });
+    }
+  };
+
+  const loginWalletAndUpdate = async () => {
+    const chumma = await loginWithWalletConnect();
+    if (chumma){
+        setVerifiedWallet(true);
+        setProgressPercentage(ProgressPercentage + 33);
+    }
   };
 
   const loggedInView = (
@@ -94,7 +103,7 @@ const Main = () => {
       </div>
       <Spacer y={1} />
       <div className={styles.row}>
-        <Button auto color="gradient" rounded bordered onPress={()=>loginWithWalletConnect()}>
+        <Button auto color="gradient" rounded bordered onPress={()=>loginWalletAndUpdate()}>
             Wallet Connect
         </Button>
         <Spacer x={1} />

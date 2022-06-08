@@ -40,10 +40,10 @@ export const writeUserTwitter = async (email : string, type : string, handle : s
     }
 };
 
-export const writeUserWallet = async (email : string, wallet : string) => {
+export const writeUserWallet = async (wallet : string) => {
     try {
         const db = getDatabase();
-        set(ref(db, 'users/' + email), {
+        set(ref(db, 'wallets/' + wallet), {
             wallet: wallet,
         });
         return true;
