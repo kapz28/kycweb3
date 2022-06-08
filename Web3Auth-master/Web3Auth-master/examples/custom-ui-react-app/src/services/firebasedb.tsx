@@ -2,16 +2,12 @@ import { getDatabase, ref, set } from "firebase/database";
 
 export const writeUserDiscord = async (email : string, handle : string) => {
     try{
-        console.log("AAA");
-        console.log(email);
-        console.log(handle);
-        console.log("AAA");
         const db = getDatabase();
-        var tempemail = String(email);
-        tempemail = tempemail.replace("@", "_");
-        tempemail = tempemail.replace(".", "_");
-        console.log(tempemail);
-        set(ref(db, 'users/' + tempemail), {
+        handle = handle.replace("@", "_");
+        handle = handle.replace("#", "_");
+        console.log(handle);
+        console.log("HANDLE");
+        set(ref(db, 'discord/' + handle), {
             discord: handle,
             discordverified: true,
             email: email
@@ -26,11 +22,12 @@ export const writeUserDiscord = async (email : string, handle : string) => {
 
 };
 
-export const writeUserTwitter = async (email : string, type : string, handle : string, dp : string) => {
+export const writeUserTwitter = async (email : string,  name : string, dp : string) => {
     try{
         const db = getDatabase();
-        set(ref(db, 'users/' + email), {
-            twitter: handle,
+        set(ref(db, 'twitter/' + name), {
+            twittername: name,
+            twitteremail: email,
             twitterprofilepic: dp, 
             twitterverified: true
         });

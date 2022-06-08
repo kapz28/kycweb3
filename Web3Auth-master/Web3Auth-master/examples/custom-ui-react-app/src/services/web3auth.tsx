@@ -193,12 +193,8 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
 
     async function init() {
       try {
-        console.log("Kapilan");
-        console.log(currentChainConfig);
         const blockchaintype = currentChainConfig["ticker"];
-        console.log("Kapilan");
         setIsLoading(true);
-        const clientIdchumma = "BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN";
         const web3authchumma = new Web3AuthCore({ 
           chainConfig: currentChainConfig,
           enableLogging: true
@@ -209,11 +205,12 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         web3authchumma.configureAdapter(openadapter);
         await web3authchumma.init();
         setWeb3AuthChumma(web3authchumma);
+
+
         const web3auth = new Web3Auth({ chainConfig: currentChainConfig, clientId: "BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U" });
         subscribeAuthEvents(web3auth);
-        console.log(blockchaintype);
         if (blockchaintype == "ETH"){
-          console.log("ETHEREUM");
+
           const metaAdapter = new MetamaskAdapter({
             chainConfig:{
             chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -241,14 +238,11 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
              ticker: "ETH",
              tickerName: "Ethereum",
            }
-          });
-          console.log("BEFORE ETHEREUM");     
+          });    
           web3auth.configureAdapter(metaAdapter);
           web3auth.configureAdapter(TorusAdapter);
-          console.log("AFTER ETHEREUM");
           const openadapter = new OpenloginAdapter({ adapterSettings: { network: web3AuthNetwork, clientId:"BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U" } });
           web3auth.configureAdapter(openadapter);
-          console.log("POST ETHEREUM");
           await web3auth.initModal({
             modalConfig: {
               [WALLET_ADAPTERS.OPENLOGIN]: {
@@ -277,10 +271,8 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
               },
             },
           });
-          console.log("INIT HERE");
 
         } else if (blockchaintype == "SOL") {
-          console.log("SOLANA");
           const solanaAdapter = new SolanaWalletAdapter({
             adapterSettings: {
              modalZIndex: 99999
@@ -327,11 +319,6 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
             },
           });
         }
-
-
-        // const phantomAdapter = await new PhantomAdapter();
-        // web3auth.configureAdapter(phantomAdapter);
-
         setWeb3Auth(web3auth);
       } catch (error) {
         console.log("DIDN'T MAKE IT ALL THE WAY");
@@ -339,34 +326,6 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       }  finally {
         setIsLoading(false);
       }
-
-      // try {
-      //   setIsLoading(true);
-      //   // const clientId = "BLf14uwUA_rcPyy5b8ED1zVcOVZGL0SwwIGTRIOplUQ6Vp4H7QfEDcX4o9qTEeR8uqDyXSrxXLOZ4RVhBSRyb7A";
-      //   // const clientId = "BL5GqZ0mt0EiRMoKpKK7G-q5X9TmJcFPAus33hKCaJybDT7eHnraUFF9ZmGVAFnxWHCeZKGgzH8kXOiM4arKDxg";
-      //   const clientId = "BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U";
-      //   const web3AuthInstance = new Web3Auth({
-      //     chainConfig: currentChainConfig,
-      //     enableLogging: true,
-      //   });
-      //   subscribeAuthEvents(web3AuthInstance);
-      //   const networkUi = new NetworkSwitch()
-
-      //   const adapter = new OpenloginAdapter({ adapterSettings: { network: web3AuthNetwork, clientId } });
-      //   const wcAdapter = new WalletConnectV1Adapter({ adapterSettings: { qrcodeModal: QRCodeModal, networkSwitchModal: networkUi }, chainConfig: currentChainConfig,  })
-
-      //   web3AuthInstance.configureAdapter(metaAdapter);
-      //   web3AuthInstance.configureAdapter(adapter);
-      //   web3AuthInstance.configureAdapter(wcAdapter);
-
-
-      //   await web3AuthInstance.init();
-      //   setWeb3Auth(web3AuthInstance);
-      // } catch (error) {
-      //   console.error(error);
-      // } finally {
-      //   setIsLoading(false);
-      // }
     }
     init();
   }, [chain, web3AuthNetwork, setWalletProvider]);
@@ -379,27 +338,17 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         uiConsole("web3auth not initialized yet");
         return;
       }
-      // if(web3Auth){
-      //   await web3Auth.logout();
-      // }
-      console.log("TTTT");
       try{
         await web3AuthChumma.logout();
       }catch (e){
         console.log("JJJ");
       }
-      console.log("BBB");
-      console.log("TTTT");
       const localProvider = await web3AuthChumma.connectTo(adapter, { loginProvider, login_hint });
       setWalletProvider(localProvider!);
       const peace  = await web3AuthChumma.getUserInfo();
-      console.log(peace);
-      console.log("MADE IT");
       if (loginProvider == "discord"){
         console.log("discord login detected and verified");
         setVerifiedDiscord(true);
-        console.log(String(peace["email"]));
-        console.log(String(peace["name"]));
         await writeUserDiscord(String(peace["email"]), String(peace["name"]));
         try{
           await web3AuthChumma.logout();
@@ -410,6 +359,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       }
       if (loginProvider == "twitter"){
         console.log("twitter login detected and verified");
+        await writeUserTwitter(String(peace["email"]),String(peace["name"]),String(peace["profileImage"]));
         setVerifiedTwitter(true);
         try{
           await web3AuthChumma.logout();
@@ -443,27 +393,6 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       console.error(error);
       return false;
     }
-    // console.log("TAPILAN");
-    // try {
-    //   console.log("PAPILAN");
-    //   setIsLoading(true);
-    //   if (!web3Auth) {
-    //     console.log("web3auth not initialized yet");
-    //     uiConsole("web3auth not initialized yet");
-    //     return;
-    //   }
-    //   console.log(WALLET_ADAPTERS.WALLET_CONNECT_V1);
-    //   console.log("KAPILAN");
-    //   const localProvider = await web3Auth.connectTo(WALLET_ADAPTERS.METAMASK, {});
-    //   // const localProvider = await web3Auth.connectTo(WALLET_ADAPTERS.WALLET_CONNECT_V1, {});
-    //   setWalletProvider(localProvider!);
-    //   console.log(localProvider);
-    // } catch (error) {
-    //   console.log("error", error);
-    // } finally {
-    //   setIsLoading(false)
-    // }
-    // console.log("WAPILAN");
   };
 
   const logout = async () => {
