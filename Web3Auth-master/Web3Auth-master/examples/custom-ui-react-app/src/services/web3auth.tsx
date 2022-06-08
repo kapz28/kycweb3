@@ -74,6 +74,7 @@ interface IWeb3AuthProps {
 
 export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, web3AuthNetwork, chain }: IWeb3AuthProps) => {
   const [web3Auth, setWeb3Auth] = useState<Web3Auth | null>(null);
+  const [web3AuthChumma, setWeb3AuthChumma] = useState<Web3AuthCore | null>(null);
   const [provider, setProvider] = useState<IWalletProvider | null>(null);
   const [user, setUser] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +118,45 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       web3auth.on(ADAPTER_EVENTS.CONNECTED, (data: unknown) => {
         console.log("Yeah!, you are successfully logged in", data);
         setUser(data);
-        setWalletProvider(web3auth.provider!);
+        // setWalletProvider(web3auth.provider!);
+      });
+
+      web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
+        console.log("connecting");
+      });
+
+      web3auth.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+        console.log("disconnected");
+        setUser(null);
+      });
+
+      web3auth.on(ADAPTER_EVENTS.ERRORED, (error: unknown) => {
+        console.error("some error or user has cancelled login request", error);
+        setUser(null);
+        logout();
+        setIsLoading(false);
+        console.log("PAPILAN");
+      });
+
+      web3auth.on(ADAPTER_EVENTS.ADAPTER_DATA_UPDATED, () => {
+        console.log("data updated");
+      });
+
+      web3auth.on(ADAPTER_EVENTS.NOT_READY, () => {
+        console.log("not ready");
+      });
+
+      web3auth.on(ADAPTER_EVENTS.READY, () => {
+        console.log("ready");
+      });
+    };
+
+    const subscribeAuthEventsChumma = (web3auth: Web3AuthCore) => {
+      // Can subscribe to all ADAPTER_EVENTS and LOGIN_MODAL_EVENTS
+      web3auth.on(ADAPTER_EVENTS.CONNECTED, (data: unknown) => {
+        console.log("Yeah!, you are successfully logged in", data);
+        setUser(data);
+        // setWalletProvider(web3auth.provider!);
       });
 
       web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
@@ -159,9 +198,22 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         const blockchaintype = currentChainConfig["ticker"];
         console.log("Kapilan");
         setIsLoading(true);
+        const clientIdchumma = "BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN";
+        const web3authchumma = new Web3AuthCore({ 
+          chainConfig: currentChainConfig,
+          enableLogging: true
+        });
+
+        subscribeAuthEventsChumma(web3authchumma);
+        const openadapter = new OpenloginAdapter({ adapterSettings: { network: web3AuthNetwork, clientId:"BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U" } });
+        web3authchumma.configureAdapter(openadapter);
+        await web3authchumma.init();
+        setWeb3AuthChumma(web3authchumma);
         const web3auth = new Web3Auth({ chainConfig: currentChainConfig, clientId: "BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U" });
         subscribeAuthEvents(web3auth);
+        console.log(blockchaintype);
         if (blockchaintype == "ETH"){
+          console.log("ETHEREUM");
           const metaAdapter = new MetamaskAdapter({
             chainConfig:{
             chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -189,9 +241,14 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
              ticker: "ETH",
              tickerName: "Ethereum",
            }
-          });     
+          });
+          console.log("BEFORE ETHEREUM");     
           web3auth.configureAdapter(metaAdapter);
           web3auth.configureAdapter(TorusAdapter);
+          console.log("AFTER ETHEREUM");
+          const openadapter = new OpenloginAdapter({ adapterSettings: { network: web3AuthNetwork, clientId:"BDl6ByIyBPCCOk7dtJfdEpIY4My9UM9zkjx6YvtfBVbI6yEkxAN7i4FpBPlyaWaE1P29G_3JZwm68MN-V2hnb0U" } });
+          web3auth.configureAdapter(openadapter);
+          console.log("POST ETHEREUM");
           await web3auth.initModal({
             modalConfig: {
               [WALLET_ADAPTERS.OPENLOGIN]: {
@@ -220,7 +277,10 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
               },
             },
           });
+          console.log("INIT HERE");
+
         } else if (blockchaintype == "SOL") {
+          console.log("SOLANA");
           const solanaAdapter = new SolanaWalletAdapter({
             adapterSettings: {
              modalZIndex: 99999
@@ -268,11 +328,13 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
           });
         }
 
+
         // const phantomAdapter = await new PhantomAdapter();
         // web3auth.configureAdapter(phantomAdapter);
 
         setWeb3Auth(web3auth);
       } catch (error) {
+        console.log("DIDN'T MAKE IT ALL THE WAY");
         console.log("error", error);
       }  finally {
         setIsLoading(false);
@@ -311,30 +373,50 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
 
   const login = async (adapter: WALLET_ADAPTER_TYPE, loginProvider: LOGIN_PROVIDER_TYPE, login_hint?: string) => {
     try {
-      console.log(adapter);
-      console.log("WALLLET");
       setIsLoading(true);
-      if (!web3Auth) {
+      if (!web3AuthChumma) {
         console.log("web3auth not initialized yet");
         uiConsole("web3auth not initialized yet");
         return;
       }
-      const localProvider = await web3Auth.connectTo(adapter, { loginProvider, login_hint });
+      // if(web3Auth){
+      //   await web3Auth.logout();
+      // }
+      console.log("TTTT");
+      try{
+        await web3AuthChumma.logout();
+      }catch (e){
+        console.log("JJJ");
+      }
+      console.log("BBB");
+      console.log("TTTT");
+      const localProvider = await web3AuthChumma.connectTo(adapter, { loginProvider, login_hint });
       setWalletProvider(localProvider!);
-      const peace  = await web3Auth.getUserInfo();
-      console.log(loginProvider);
+      const peace  = await web3AuthChumma.getUserInfo();
+      console.log(peace);
+      console.log("MADE IT");
       if (loginProvider == "discord"){
         console.log("discord login detected and verified");
         setVerifiedDiscord(true);
         console.log(String(peace["email"]));
         console.log(String(peace["name"]));
         await writeUserDiscord(String(peace["email"]), String(peace["name"]));
-        logout();
+        try{
+          await web3AuthChumma.logout();
+        }catch (e){
+          console.log("JJJ");
+        }
+        setProvider(null);
       }
       if (loginProvider == "twitter"){
         console.log("twitter login detected and verified");
         setVerifiedTwitter(true);
-        logout();
+        try{
+          await web3AuthChumma.logout();
+        }catch (e){
+          console.log("JJJ");
+        }
+        setProvider(null);;
       }
       return true;
     } catch (error) {
@@ -354,7 +436,8 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         return false;
       }
       const localProvider = await web3Auth.connect();
-      setWalletProvider(localProvider!);
+      await setWalletProvider(localProvider!);
+      await logout();
       return true;
     } catch (error) {
       console.error(error);
