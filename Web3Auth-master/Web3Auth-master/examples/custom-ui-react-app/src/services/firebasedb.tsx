@@ -52,7 +52,7 @@ export const writeUserWallet = async (wallet : string) => {
 };
 
 
-export const writeUserFullProfile = async(wallet : string, discord : Partial<UserInfo> | null, twitter : Partial<UserInfo> | null) => {
+export const writeUserFullProfile = async(wallet : String[], discord : Partial<UserInfo> | null, twitter : Partial<UserInfo> | null) => {
     try {
         console.log("WRITE");
         console.log(wallet);

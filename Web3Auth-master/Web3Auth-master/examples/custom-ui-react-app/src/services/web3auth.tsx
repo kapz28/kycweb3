@@ -84,6 +84,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
   const [InfoDiscord, setInfoDiscord] = useState<Partial<UserInfo> | null>(null);
   const [InfoTwitter, setInfoTwitter] = useState<Partial<UserInfo> | null>(null);
   const [InfoWallet, setInfoWallet] = useState("");
+  const [InfoWalletArr, setInfoWalletArr] = useState<String[]>([]);
 
   const setWalletProvider = useCallback(
     async (web3authProvider: SafeEventEmitterProvider) => {
@@ -92,7 +93,13 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       const walletaddr = await walletProvider.getAccounts();
       writeUserWallet(String(walletaddr[0]));
       setInfoWallet(String(walletaddr[0]));
-      setVerifiedWallet(true);
+      var newNumbers = InfoWalletArr.slice(); ;
+      newNumbers.push(String(walletaddr[0]));
+      console.log("PUSHED");
+      console.log(String(walletaddr[0]));
+      console.log(InfoWalletArr);
+      setInfoWalletArr(newNumbers);
+      setVerifiedWallet(true); // activate only for non social logins
     },
     [chain]
   );
@@ -400,7 +407,9 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
 
   const userFullProfilePush = async () => {
       if(VerifiedDiscord&&VerifiedTwitter&&VerifiedWallet){
-        writeUserFullProfile(InfoWallet,InfoDiscord,InfoTwitter);
+        console.log("ARRAY");
+        console.log(InfoWalletArr);
+        writeUserFullProfile(InfoWalletArr,InfoDiscord,InfoTwitter);
       }
   };
 
