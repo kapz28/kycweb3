@@ -1,3 +1,4 @@
+import { UserInfo } from "@web3auth/base";
 import { getDatabase, ref, set } from "firebase/database";
 
 export const writeUserDiscord = async (email : string, handle : string) => {
@@ -43,6 +44,33 @@ export const writeUserWallet = async (wallet : string) => {
         set(ref(db, 'wallets/' + wallet), {
             wallet: wallet,
         });
+        return true;
+    } catch (e) {
+        return false;
+    }
+
+};
+
+
+export const writeUserFullProfile = async(wallet : string, discord : Partial<UserInfo> | null, twitter : Partial<UserInfo> | null) => {
+    try {
+        console.log("WRITE");
+        console.log(wallet);
+        console.log(discord);
+        console.log(twitter);
+        if(twitter&&discord&&wallet){
+            const db = getDatabase();
+            set(ref(db, 'users/' + twitter["name"]), {
+                wallet: wallet,
+                discordhandle: discord["name"],
+                discordemail: discord["email"],
+                twitteremail: twitter["email"],
+                discordpic: discord["profileImage"],
+                twitterpic: twitter["profileImage"],
+
+            });
+        }
+
         return true;
     } catch (e) {
         return false;

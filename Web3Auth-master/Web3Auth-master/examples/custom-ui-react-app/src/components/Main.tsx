@@ -9,7 +9,7 @@ import { Button, Checkbox, Input, Spacer, Text, Progress } from "@nextui-org/rea
 import { writeUserDiscord, writeUserTwitter, writeUserWallet }from "../services/firebasedb";
 
 const Main = () => {
-  const { provider, login, loginWithWalletConnect, logout, getUserInfo, getAccounts, getBalance, signMessage, isLoading, signV4Message, progressUpdate, getDiscordVerifiedStatus, getTwitterVerifiedStatus, getWalletVerifiedStatus } = useWeb3Auth();
+  const { provider, login, loginWithWalletConnect, userFullProfilePush, logout, getUserInfo, getAccounts, getBalance, signMessage, isLoading, signV4Message, progressUpdate, getDiscordVerifiedStatus, getTwitterVerifiedStatus, getWalletVerifiedStatus } = useWeb3Auth();
   const handleLoginWithEmail = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const email = (e.target as any)[0].value;
@@ -26,10 +26,12 @@ const Main = () => {
       if(provider == "discord"){
         setVerifiedDiscord(true);
         setProgressPercentage(ProgressPercentage + 33);
+        userFullProfilePush();
       }
       else if(provider == "twitter"){
         setVerifiedTwitter(true);
         setProgressPercentage(ProgressPercentage + 33);
+        userFullProfilePush();
       }
     }
   };
@@ -39,6 +41,7 @@ const Main = () => {
     if (chumma){
         setVerifiedWallet(true);
         setProgressPercentage(ProgressPercentage + 33);
+        userFullProfilePush();
     }
   };
 
